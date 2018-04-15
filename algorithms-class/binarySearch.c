@@ -34,7 +34,7 @@ int binarySearchIteration(int arr[], int arrLength, int x) {
       return mid;
     }
 
-    if (left < mid) {
+    if (x < mid) {
       right = mid - 1;
     } else {
       left = mid + 1;
