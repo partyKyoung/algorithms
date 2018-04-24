@@ -18,37 +18,59 @@
 #include <stdlib.h>
 #include <string.h>
 
+int fact (int n) {
+  int res, i;
 
-void recurse(char* parenthesisPairs, char cur, int open, int close, int num) {
-  int size = num * 2;
-  int i = 0;
-
-  if (size == i) {
-    parenthesisPairs[i] = cur;
+  if (n == 1) {
+    return n;
   }
 
-  if (open < num) {
-    recurse(parenthesisPairs, '(', open + 1, close, num);
+  res = n;
+
+  for (i = n - 1; i > 0; i--) {
+    res *= i;
   }
 
-  if (close < open) {
+  return res;
+}
 
-    recurse(parenthesisPairs, ')', open, close + 1, num);
-  }
+int getCatalanNumber (int num) {
+  /** 
+   * denominator 분모
+   * numerator 분자
+  */
+  int denominator = 0, numerator = 0, catalanNumber = 0;
+
+  numerator = fact(2 * num);
+  denominator = fact(num + 1) * fact(num);
+  catalanNumber = numerator / denominator;
+
+  return catalanNumber;
+}
+
+void recurse(char* parenthesisList, int open, int close, int num) {
+  
+}
+
+char* parenthesisPairs (int num, int size) {
+  char* parenthesisList = (char* )malloc(sizeof(char) * size);
+
+  recurse(parenthesisList, 0, 0, num);
+
+  return parenthesisList;
 }
 
 int main () {
   char* parenthesisList;
-  int size = 0, num = 0;
+  int num = 0, size = 0;
 
   scanf("%d", &num);
-  
-  size = num * 2;
-  parenthesisList = (char *) malloc (sizeof(char)* size);
 
-  memset(parenthesisList, 0, sizeof(size));
+  size = getCatalanNumber(num);
 
-  recurse(parenthesisList, '\n', 0, 0, num);
+  parenthesisList = parenthesisPairs(num, size);
+
+  printf("%s\n", parenthesisList);
 
   free(parenthesisList);
 }
