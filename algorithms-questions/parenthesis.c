@@ -18,38 +18,37 @@
 #include <stdlib.h>
 #include <string.h>
 
-int fact (int n) {
-  int res, i;
 
-  if (n == 1) {
-    return n;
+void recurse(char* parenthesisPairs, char cur, int open, int close, int num) {
+  int size = num * 2;
+  int i = 0;
+
+  if (size == i) {
+    parenthesisPairs[i] = cur;
   }
 
-  res = n;
-
-  for (i = n - 1; i > 0; i--) {
-    res *= i;
+  if (open < num) {
+    recurse(parenthesisPairs, '(', open + 1, close, num);
   }
 
-  return res;
-}
+  if (close < open) {
 
-int getCatalanNumber (int num) {
-  /** 
-   * denominator 분모
-   * numerator 분자
-  */
-  int denominator = 0, numerator = 0, catalanNumber = 0;
-
-  numerator = fact(2 * num);
-  denominator = fact(num + 1) * fact(num);
-  catalanNumber = numerator / denominator;
-
-  printf("%d\n", catalanNumber);
-
-  return catalanNumber;
+    recurse(parenthesisPairs, ')', open, close + 1, num);
+  }
 }
 
 int main () {
-  getCatalanNumber(5);
+  char* parenthesisList;
+  int size = 0, num = 0;
+
+  scanf("%d", &num);
+  
+  size = num * 2;
+  parenthesisList = (char *) malloc (sizeof(char)* size);
+
+  memset(parenthesisList, 0, sizeof(size));
+
+  recurse(parenthesisList, '\n', 0, 0, num);
+
+  free(parenthesisList);
 }
