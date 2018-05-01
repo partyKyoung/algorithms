@@ -18,6 +18,7 @@
 #include <stdlib.h>
 #include <string.h>
 
+// 팩토리얼 함수
 int fact (int n) {
   int res, i;
 
@@ -34,6 +35,7 @@ int fact (int n) {
   return res;
 }
 
+// 괄호조합 경우의 수 구해주는 함수
 int getCatalanNumber (int num) {
   /** 
    * denominator 분모
@@ -48,29 +50,15 @@ int getCatalanNumber (int num) {
   return catalanNumber;
 }
 
-void recurse(char* parenthesisList, int open, int close, int num) {
-  
+// 괄호 조합 구하는 재귀함수
+void recurse(char** parenthesisList, char* parenthesis, int open, int close, int num, int parenthesisIndex) {
+ 
 }
 
-char* parenthesisPairs (int num, int size) {
-  char* parenthesisList = (char* )malloc(sizeof(char) * size);
+void parenthesisPairs (int num, int maxLength) {
 
-  recurse(parenthesisList, 0, 0, num);
-
-  return parenthesisList;
 }
 
 int main () {
-  char* parenthesisList;
-  int num = 0, size = 0;
 
-  scanf("%d", &num);
-
-  size = getCatalanNumber(num);
-
-  parenthesisList = parenthesisPairs(num, size);
-
-  printf("%s\n", parenthesisList);
-
-  free(parenthesisList);
 }
