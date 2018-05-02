@@ -1,3 +1,6 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
 /**
  * 안녕하세요, 매일프로그래밍 이번주 문제입니다.
  * 정수 n이 주어지면, n개의 여는 괄호 "("와 n개의 닫는 괄호 ")"로 만들 수 있는 괄호 조합을 모두 구하시오. 
@@ -13,10 +16,6 @@
  * Input: 3
  * Output: ["((()))", "(()())", "()(())", "(())()", "()()()"]
 */
-
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
 
 // 팩토리얼 함수
 int fact (int n) {
