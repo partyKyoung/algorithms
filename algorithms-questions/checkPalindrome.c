@@ -58,36 +58,24 @@ int getCheckPalindrome2 (int num) {
  * 내 풀이
  * num 을 받으면 각각 자리수를 잘라 배열에 저장해서 배열의 앞부분과 뒷부분을 하나씩 비교해서 같은지 확인 
 */
-int getCheckPalindrome (int num, int* numList, int length) {
-  bool isPalindrome = true;
+char* getCheckPalindrome (int num, int* numList, int length) {
+  char* isPalindrome = "True";
 
   if (num < 0) {
-    isPalindrome = false;
+    isPalindrome = "False";
 
     return isPalindrome;
   }
 
   for (int i = 0; i < length; i++) {
     if (numList[i] != numList[(length - 1) -i]) {
-      isPalindrome = false;
+      isPalindrome = "False";
     }
   }
+
+  free(numList);
 
   return isPalindrome;
-}
-
-void getNumList (int num, int* numList, int length) {
-  numList = (int *)malloc(sizeof(int) * length);
-
-  for (int i = 0; num > 0; i++) {
-    numList[i] = (int) num % 10;
-    num = num / 10;
-    
-    if (num > 0) {
-      length += 1;
-      numList = realloc(numList, sizeof(int) * length);
-    }
-  }
 }
 
 int main () {
@@ -96,15 +84,21 @@ int main () {
 
   scanf("%d", &num);
 
-  // if (getCheckPalindrome(num, numList, length) == true) {
-  //   printf("True\n");
-  // } else {
-  //   printf("False\n");
-  // }
+  numList = (int *)malloc(sizeof(int) * length);
 
-  if (getCheckPalindrome2(num) == true) {
-    printf("True2\n");
-  } else {
-    printf("False2\n");
+  for (int i = 0; num > 0; i++) {
+    numList[i] = (int) num % 10;
+    num = num / 10;
+
+    if (i == 0 && num < 0) {
+      numList[i] *= -1;
+    }
+
+    if (num > 0) {
+      length += 1;
+      numList = realloc(numList, sizeof(int) * length);
+    }
   }
+
+  printf("%s\n", getCheckPalindrome(num, numList, length));
 }
