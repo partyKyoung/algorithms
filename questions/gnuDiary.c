@@ -37,7 +37,9 @@ int main() {
   int targetNum = maxNum % 10;
 
   while (maxNum > 0) {
+    int test = maxNum % 10;
 
+    printf("%d\n", test);
     maxNum /= 10;
   }
 }
