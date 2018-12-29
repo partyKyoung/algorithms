@@ -35,11 +35,12 @@ int countSticker(int i, int j) {
 int main() {
   int maxNum = 88;
   int targetNum = maxNum % 10;
-
+  
   while (maxNum > 0) {
     int test = maxNum % 10;
 
     printf("%d\n", test);
+
     maxNum /= 10;
   }
 }
