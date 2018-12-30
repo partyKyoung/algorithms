@@ -32,15 +32,31 @@ int countSticker(int i, int j) {
   return 0;
 }
 
-int main() {
-  int maxNum = 88;
-  int targetNum = maxNum % 10;
+int countNum(int maxPrice) {
+  int count = 1, nextCount = 1;
+
+  while (maxPrice > 0) {
+    int targetNum = maxPrice % 10;
+
+    printf("%d %d %d\n", num, targetNum, maxPrice);
   
-  while (maxNum > 0) {
-    int test = maxNum % 10;
+    count += countSticker(num, targetNum);
 
-    printf("%d\n", test);
+    maxPrice /= 10;
 
-    maxNum /= 10;
+    nextCount = countNum(maxPrice);
+
+    if (nextCount > count) {
+      count = nextCount;
+    }
+
   }
+
+  return count;
+}
+
+int main() {
+  int maxNum = 878885;
+
+  printf("%d\n", countNum(maxNum));
 }
