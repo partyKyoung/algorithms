@@ -24,39 +24,45 @@
   여러분이 근우의 최대 목표액 N이 주어졌을 때, 근우가 필요한 최소 스티커 팩의 개수를 구해주자.
 */
 
-int countSticker(int i, int j) {
-  if (i == j) {
+int setOne(int count) {
+  int num1 = 0, num2 = 1;
+  for (int i= 0; i < count; i++) {
+    num1 += num2; 
+
+    num2 *= 10;
+  }
+
+  return num1;
+}
+
+int countNum(int maxNum) {
+  int count = 0;
+  int limit = 0;
+  int num = maxNum;
+
+  if (num == 0) {
     return 1;
   }
 
-  return 0;
-}
+  while (num > 0) {
+    count += 1;
 
-int countNum(int maxPrice) {
-  int count = 1, nextCount = 1;
+    num /= 10;
+  }
 
-  while (maxPrice > 0) {
-    int targetNum = maxPrice % 10;
-    
-    printf("%d %d %d\n", num, targetNum, maxPrice);
-  
-    count += countSticker(num, targetNum);
+  limit = setOne(count);
 
-    maxPrice /= 10;
-
-    nextCount = countNum(maxPrice);
-
-    if (nextCount > count) {
-      count = nextCount;
-    }
-
+  if (maxNum < limit) {
+    count -= 1;
   }
 
   return count;
 }
 
-int main() {
-  int maxNum = 878885;
 
-  printf("%d\n", countNum(maxNum));
+int main() {
+  int maxNum = 0;
+    
+  scanf("%d", &maxNum);
+  printf("%d", countNum(maxNum));
 }
