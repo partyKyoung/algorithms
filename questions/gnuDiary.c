@@ -37,7 +37,7 @@ int countNum(int maxPrice) {
 
   while (maxPrice > 0) {
     int targetNum = maxPrice % 10;
-
+    
     printf("%d %d %d\n", num, targetNum, maxPrice);
   
     count += countSticker(num, targetNum);
