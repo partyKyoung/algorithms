@@ -1,5 +1,5 @@
 #include <stdio.h>
-
+#include <stdlib.h>
 /** 
   곧 2018년이 끝나고, 2019년이 온다.
 
@@ -66,3 +66,6 @@ int main() {
   scanf("%d", &maxNum);
   printf("%d", countNum(maxNum));
 }
+
+
+
