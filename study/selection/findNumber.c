@@ -35,25 +35,29 @@ int partition(int arr[], int leftIndex, int rightIndex) {
   return r_hold;
 }
 
-void quickSort(int arr[], int leftIndex, int rightIndex) {
-  if (leftIndex <= rightIndex) {
+int findNumber(int arr[], int leftIndex, int rightIndex, int findNum) {
     int pivot = partition(arr, leftIndex, rightIndex); // 두 부분배열로 분할
 
-    quickSort(arr, leftIndex, pivot - 1);  // 왼쪽 부분배열에 대해 순환호출
-    quickSort(arr, pivot + 1, rightIndex); // 오른쪽 부분배열에 대해서 순환호출
-  }
-  
+    if (findNum == pivot) {
+      return arr[pivot];
+    }
+
+    if (findNum < leftIndex) {
+      // 왼쪽 부분배열에 대해 순환호출
+      findNumber(arr, leftIndex, pivot - 1, findNum);
+
+    } else {
+      // 오른쪽 부분배열에 대해서 순환호출
+      findNumber(arr, pivot + 1, rightIndex, findNum);
+    }
 }
 
 int main() {
   int arr[8] = {30, 45, 20, 15, 40, 25, 35, 10};
   int length = (int) (sizeof(arr) / sizeof(arr[0]));
+  int index = 3;
 
-  // 퀵 정렬 수행
-  quickSort(arr, 0, length - 1);
+  int test = findNumber(arr, 0, length - 1, index);
 
-
-  for (int i = 0; i < length; i++) {
-    printf("%d ", arr[i]);
-  }
+  printf("%d\n", test);
 }
