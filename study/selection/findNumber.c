@@ -1,8 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-void swap(int arr[], int a, int b)
-{
+void swap(int arr[], int a, int b) {
     int temp = arr[a];
     arr[a] = arr[b];
     arr[b] = temp;
@@ -44,20 +43,20 @@ int findNumber(int arr[], int leftIndex, int rightIndex, int findNum) {
 
     if (findNum < leftIndex) {
       // 왼쪽 부분배열에 대해 순환호출
-      findNumber(arr, leftIndex, pivot - 1, findNum);
+      return findNumber(arr, leftIndex, pivot - 1, findNum);
 
     } else {
       // 오른쪽 부분배열에 대해서 순환호출
-      findNumber(arr, pivot + 1, rightIndex, findNum);
+      return findNumber(arr, pivot + 1, rightIndex, findNum);
     }
 }
 
 int main() {
   int arr[8] = {30, 45, 20, 15, 40, 25, 35, 10};
   int length = (int) (sizeof(arr) / sizeof(arr[0]));
-  int index = 3;
+  int index = 2;
 
-  int test = findNumber(arr, 0, length - 1, index);
+  int findNum = findNumber(arr, 0, length - 1, index);
 
-  printf("%d\n", test);
+  printf("%d번째로 작은 수: %d\n", index, findNum);
 }
