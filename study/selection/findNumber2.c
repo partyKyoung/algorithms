@@ -1,69 +1,117 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+// 삽입 정렬
+void insertion_sort(int list[], int n){
+  int i, j, key;
+
+  // 인텍스 0은 이미 정렬된 것으로 볼 수 있다.
+  for(i=1; i<n; i++){
+    key = list[i]; // 현재 삽입될 숫자인 i번째 정수를 key 변수로 복사
+
+    // 현재 정렬된 배열은 i-1까지이므로 i-1번째부터 역순으로 조사한다.
+    // j 값은 음수가 아니어야 되고
+    // key 값보다 정렬된 배열에 있는 값이 크면 j번째를 j+1번째로 이동
+    for(j=i-1; j>=0 && list[j]>key; j--){
+      list[j+1] = list[j]; // 레코드의 오른쪽으로 이동
+    }
+
+    list[j+1] = key;
+  }
+}
+
 void swap(int arr[], int a, int b) {
     int temp = arr[a];
     arr[a] = arr[b];
     arr[b] = temp;
 }
 
-int partition(int arr[], int leftIndex, int rightIndex) {
-// 맨 왼쪽을 피벗으로 잡기 때문에 l_hold는 피벗의 위치 + 1, r_hold는 배열의 마지막 index
-  int pivot = arr[leftIndex], l_hold = leftIndex + 1, r_hold = rightIndex;
+int partition(int arr[], int leftIndex, int rightIndex, int pivot) {
+  int swapIndex = leftIndex;
 
-  while (l_hold <= r_hold) {
-    // l_hold는 피벗보다 큰 값을 찾는다.
-    while (l_hold <= rightIndex && arr[l_hold] < pivot) {
-      l_hold++;
-    }
-
-    // r_hold는 피벗보다 작은 값을 찾는다.
-    while (r_hold > leftIndex && arr[r_hold] >= pivot) {
-      r_hold--;
-    }
-    
-    if (l_hold < r_hold) {
-      // arr[l_hold]와 arr[r_hold]의 값을 교환한다.
-      swap(arr, l_hold, r_hold);
+  for (int i = 0; i < rightIndex; i++) {
+    if (arr[i] < pivot) {
+      swap(arr, i, swapIndex);
     }
   }
 
-  // 피벗과 arr[r_hold]값을 교환한다. 
-  swap(arr, leftIndex, r_hold);
-
-  return r_hold;
+  return swapIndex;
 }
 
-int selection (int arr[], int arrLength, int groupLength, int findIndex) {
+int selection (int arr[], int leftIndex, int rightIndex, int groupLength, int findIndex) {
+  if (leftIndex > rightIndex) {
+    return -1;
+  }
+
+  int arrLength = rightIndex - (leftIndex + 1);
+  
   // 배열의 길이가 5보다 작거나 같으면 배열 A에서 i번째 원소를 찾아서 봔한한다. 
-  if (arrLength <= 5) {
+  if (rightIndex <= 5) {
+    insertion_sort(arr, arrLength);
+
     return arr[findIndex];
   }
 
-  int middleArr[groupLength];
-  int j = 5 / 2;
+  int groupArr[groupLength][5], middleArr[groupLength];
+  int firstIndex = 0, lastIndex = 0;
+ 
+  // arr을 다섯개씩 나누어 총 arrLength / 5 개의 그룹을 만든다. 그룹에 참여하지 못한 원소들은 피벗 선정에 사용하지 않는다. 
+  for (int i = 0; i < arrLength; i++) {
+    groupArr[firstIndex][lastIndex] = arr[i];
+    lastIndex += 1;
 
-  // 배열 A의 원소를 다섯 개 씩 묶어서 n/5개의 그룹을 만든 후 각 그룳에서 중간값을 구하고 이들을 모아서 배열 M을 구성한다.
-  for (int i = 0; i < groupLength; i++) {
-    if (j < arrLength) {
-      middleArr[i] = arr[j];
+    if (lastIndex % 5 == 0) {
+      // 각 그룹의 다섯개 원소에 대해서 삽입정렬을 수행한 후 그룹의 중간값을 구한다.
+      insertion_sort(groupArr[firstIndex], 5);
 
-      j += 5;
+      middleArr[firstIndex] = groupArr[firstIndex][5/2];
+      lastIndex = 0;
+      firstIndex += 1;
+    }
+
+    if (firstIndex == groupLength) {
+      break;
     }
   }
 
-  // 중간값들의 중간값을 계산하기 위해 선택 함수를 순환호출 한다.
-  int loopLength = groupLength / 5;
-  int pivot = selection(middleArr, loopLength, loopLength/2, findIndex);
-  int partitionPivot = partition(arr, 0, pivot);
-  
-  if (findIndex == partitionPivot + 1) {
-    return arr[partitionPivot];
+  // 중간값들의 중간값을 구한다.
+  int middleValue = selection(middleArr, 0, groupLength, groupLength/5, ((groupLength/5) / 2));
+
+  // 중간값을 피벗으로 사용하여 주어진 배열 A를 분할한다. 
+  int pivot = partition(arr, leftIndex, rightIndex, middleValue);
+
+  if (findIndex == pivot + 1) {
+    return arr[findIndex];
   }
+
+  if (findIndex < pivot + 1) {
+    int rightIndex = pivot - 1;
+    int arrLength = (rightIndex - (leftIndex + 1)) / 5;
+
+    return selection(arr, leftIndex, pivot - 1, groupLength, findIndex);
+  } else {
+    int leftIndex = pivot + 1;
+    int groupLength = (rightIndex - (leftIndex + 1)) / 5;
+
+    return selection(arr, pivot + 1, rightIndex, groupLength, findIndex - rightIndex - (leftIndex + 1));
+
+  }
+
+  return -1;
 }
 
 int main () {
-  int arr[38] = {9, 6, 35, 39, 15, 24, 70, 95, 50, 1, 97, 84, 77, 28, 10, 22, 27, 11, 31, 62, 54, 81, 5, 34, 4, 89, 60, 29, 2, 75, 18, 36, 80, 7, 53, 25, 66, 43};
+  int arr[15] = {5, 9, 2, 30, 1, 7, 12, 10, 22, 11, 6, 34, 66, 18, 33};
+  int index = 10;
 
-  selection(arr, 38, 38/5, 5);
+  /* 테스트 */
+  insertion_sort(arr, 15);
+
+  for (int i = 0; i < 15; i++) {
+    printf("%d ", arr[i]);
+  }
+
+  printf("\n");
+
+  printf("%d번 로 작은 값: %d\n", index, selection(arr, 0, 15, 15/5, index));
 }
