@@ -1,8 +1,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-// 삽입 정렬
-void insertion_sort(int list[], int n){
+// 삽입 정렬 함수
+void insertionSort(int list[], int n){
   int i, j, key;
 
   // 인텍스 0은 이미 정렬된 것으로 볼 수 있다.
@@ -20,92 +20,65 @@ void insertion_sort(int list[], int n){
   }
 }
 
-void swap(int arr[], int a, int b) {
-    int temp = arr[a];
-    arr[a] = arr[b];
-    arr[b] = temp;
-}
-
+// 분할 함수
 int partition(int arr[], int leftIndex, int rightIndex, int pivot) {
   int swapIndex = leftIndex;
 
   for (int i = 0; i < rightIndex; i++) {
     if (arr[i] < pivot) {
-      swap(arr, i, swapIndex);
+      int temp = arr[i];
+    
+      arr[i] = arr[swapIndex];
+      arr[swapIndex] = temp;
+
+      swapIndex += 1;
     }
   }
 
-  return swapIndex;
+  return swapIndex - 1;
 }
 
-int selection (int arr[], int leftIndex, int rightIndex, int groupLength, int findIndex) {
-  if (leftIndex > rightIndex) {
+int selection (int arr[], int leftIndex, int rightIndex, int findIndex) {
+  int arrLength = rightIndex - leftIndex + 1;
+  int medianNum = arrLength / 5;
+  
+  if (1 > findIndex && findIndex > arrLength) {
     return -1;
   }
 
-  int arrLength = rightIndex - (leftIndex + 1);
-  
-  // 배열의 길이가 5보다 작거나 같으면 배열 A에서 i번째 원소를 찾아서 봔한한다. 
-  if (rightIndex <= 5) {
-    insertion_sort(arr, arrLength);
+  if (arrLength <= 5) {
+    insertionSort(arr, arrLength);
 
     return arr[findIndex];
   }
 
-  int groupArr[groupLength][5], middleArr[groupLength];
-  int firstIndex = 0, lastIndex = 0;
- 
-  // arr을 다섯개씩 나누어 총 arrLength / 5 개의 그룹을 만든다. 그룹에 참여하지 못한 원소들은 피벗 선정에 사용하지 않는다. 
-  for (int i = 0; i < arrLength; i++) {
-    groupArr[firstIndex][lastIndex] = arr[i];
-    lastIndex += 1;
+  int *maidanArr = (int *) malloc(sizeof(int) * medianNum);
 
-    if (lastIndex % 5 == 0) {
-      // 각 그룹의 다섯개 원소에 대해서 삽입정렬을 수행한 후 그룹의 중간값을 구한다.
-      insertion_sort(groupArr[firstIndex], 5);
+  for (int i = 0; i < medianNum; i++) {
+    int maidanLeft = leftIndex + (5 * i);
+    int maidanRight = (leftIndex + 5 * (i+1)-1);
+    int findMaidanIndex = (maidanRight - maidanLeft + 1) / 2;
 
-      middleArr[firstIndex] = groupArr[firstIndex][5/2];
-      lastIndex = 0;
-      firstIndex += 1;
-    }
-
-    if (firstIndex == groupLength) {
-      break;
-    }
+    maidanArr[i] = selection(arr, leftIndex + (5 * i), (leftIndex + 5 * (i+1)-1), maidanLeft + 2); 
   }
 
-  // 중간값들의 중간값을 구한다.
-  int middleValue = selection(middleArr, 0, groupLength, groupLength/5, ((groupLength/5) / 2));
+  int pivot=selection(maidanArr, 0, medianNum - 1, (medianNum / 2+1));
+  int pivotIndex=partition(arr, leftIndex, rightIndex, pivot);
+  int rank = pivotIndex-leftIndex;
 
-  // 중간값을 피벗으로 사용하여 주어진 배열 A를 분할한다. 
-  int pivot = partition(arr, leftIndex, rightIndex, middleValue);
-
-  if (findIndex == pivot + 1) {
-    return arr[findIndex];
-  }
-
-  if (findIndex < pivot + 1) {
-    int rightIndex = pivot - 1;
-    int arrLength = (rightIndex - (leftIndex + 1)) / 5;
-
-    return selection(arr, leftIndex, pivot - 1, groupLength, findIndex);
+  if (findIndex <= rank) {
+      return selection(arr, leftIndex, pivotIndex, findIndex);
   } else {
-    int leftIndex = pivot + 1;
-    int groupLength = (rightIndex - (leftIndex + 1)) / 5;
-
-    return selection(arr, pivot + 1, rightIndex, groupLength, findIndex - rightIndex - (leftIndex + 1));
-
+      return selection(arr, pivotIndex + 1, rightIndex, findIndex-rank);
   }
-
-  return -1;
-}
+} 
 
 int main () {
   int arr[15] = {5, 9, 2, 30, 1, 7, 12, 10, 22, 11, 6, 34, 66, 18, 33};
   int index = 10;
 
   /* 테스트 */
-  insertion_sort(arr, 15);
+  insertionSort(arr, 15);
 
   for (int i = 0; i < 15; i++) {
     printf("%d ", arr[i]);
@@ -113,5 +86,5 @@ int main () {
 
   printf("\n");
 
-  printf("%d번 로 작은 값: %d\n", index, selection(arr, 0, 15, 15/5, index));
+  printf("%d번째로 작은 값: %d\n", index, selection(arr, 0, 14, index));
 }
