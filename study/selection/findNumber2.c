@@ -2,21 +2,20 @@
 #include <stdlib.h>
 
 // 삽입 정렬 함수
-void insertionSort(int list[], int n){
+void insertionSort(int arr[], int leftIndex, int rightIndex){
   int i, j, key;
 
-  // 인텍스 0은 이미 정렬된 것으로 볼 수 있다.
-  for(i=1; i<n; i++){
-    key = list[i]; // 현재 삽입될 숫자인 i번째 정수를 key 변수로 복사
+  for(i = leftIndex + 1; i <= rightIndex; i++){
+    key = arr[i]; // 현재 삽입될 숫자인 i번째 정수를 key 변수로 복사
 
     // 현재 정렬된 배열은 i-1까지이므로 i-1번째부터 역순으로 조사한다.
     // j 값은 음수가 아니어야 되고
     // key 값보다 정렬된 배열에 있는 값이 크면 j번째를 j+1번째로 이동
-    for(j=i-1; j>=0 && list[j]>key; j--){
-      list[j+1] = list[j]; // 레코드의 오른쪽으로 이동
+    for(j=i-1; j>=0 && arr[j]>key; j--){
+      arr[j+1] = arr[j]; // 레코드의 오른쪽으로 이동
     }
 
-    list[j+1] = key;
+    arr[j+1] = key;
   }
 }
 
@@ -24,7 +23,7 @@ void insertionSort(int list[], int n){
 int partition(int arr[], int leftIndex, int rightIndex, int pivot) {
   int swapIndex = leftIndex;
 
-  for (int i = 0; i < rightIndex; i++) {
+  for (int i = leftIndex; i <= rightIndex; i++) {
     if (arr[i] < pivot) {
       int temp = arr[i];
     
@@ -42,49 +41,36 @@ int selection (int arr[], int leftIndex, int rightIndex, int findIndex) {
   int arrLength = rightIndex - leftIndex + 1;
   int medianNum = arrLength / 5;
   
-  if (1 > findIndex && findIndex > arrLength) {
+  if (0 > findIndex && findIndex > arrLength) {
     return -1;
   }
 
   if (arrLength <= 5) {
-    insertionSort(arr, arrLength);
+    insertionSort(arr, leftIndex, rightIndex);
 
-    return arr[findIndex];
+    return arr[findIndex - 1];
   }
 
   int *maidanArr = (int *) malloc(sizeof(int) * medianNum);
 
   for (int i = 0; i < medianNum; i++) {
-    int maidanLeft = leftIndex + (5 * i);
-    int maidanRight = (leftIndex + 5 * (i+1)-1);
-    int findMaidanIndex = (maidanRight - maidanLeft + 1) / 2;
-
-    maidanArr[i] = selection(arr, leftIndex + (5 * i), (leftIndex + 5 * (i+1)-1), maidanLeft + 2); 
+    maidanArr[i] = selection(arr, leftIndex + (5 * i), (leftIndex + (5 * (i+1)-1)), leftIndex + (5 * i) + 2);
   }
 
-  int pivot=selection(maidanArr, 0, medianNum - 1, (medianNum / 2+1));
-  int pivotIndex=partition(arr, leftIndex, rightIndex, pivot);
-  int rank = pivotIndex-leftIndex;
+  int pivot = selection(maidanArr, 0, medianNum - 1, (medianNum / 2) + 1);
+  int pivotIndex = partition(arr, leftIndex, rightIndex, pivot);
+  int rank = pivotIndex - leftIndex + 1;
 
   if (findIndex <= rank) {
       return selection(arr, leftIndex, pivotIndex, findIndex);
   } else {
-      return selection(arr, pivotIndex + 1, rightIndex, findIndex-rank);
+      return selection(arr, pivotIndex + 1, rightIndex, findIndex);
   }
 } 
 
 int main () {
-  int arr[15] = {5, 9, 2, 30, 1, 7, 12, 10, 22, 11, 6, 34, 66, 18, 33};
+  int arr[38] = {9, 6, 35, 39, 15, 24, 70, 95, 50, 1, 97, 84, 77, 28, 10, 22, 27, 11, 31, 62, 54, 81, 5, 34, 4, 89, 60, 29, 2, 75, 18, 36, 80, 7, 53, 25, 66, 43};
   int index = 10;
 
-  /* 테스트 */
-  insertionSort(arr, 15);
-
-  for (int i = 0; i < 15; i++) {
-    printf("%d ", arr[i]);
-  }
-
-  printf("\n");
-
-  printf("%d번째로 작은 값: %d\n", index, selection(arr, 0, 14, index));
+  printf("%d번째로 작은 값: %d\n", index, selection(arr, 0, 37, index));
 }
