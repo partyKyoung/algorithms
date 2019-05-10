@@ -45,6 +45,7 @@ int selection (int arr[], int leftIndex, int rightIndex, int findIndex) {
     return -1;
   }
 
+  // 배열의 길이가 5보다 같거나 작으면 findIndex - 1번째 원소를 찾아 봔한한다.
   if (arrLength <= 5) {
     insertionSort(arr, leftIndex, rightIndex);
 
@@ -53,11 +54,15 @@ int selection (int arr[], int leftIndex, int rightIndex, int findIndex) {
 
   int *maidanArr = (int *) malloc(sizeof(int) * medianNum);
 
+  // 배열 arr에서 5개씩 원소를 묶어 n/5 개의 그룹을 만든 후 각 그룹에서 중간값을 구해 배열 maidanArr을 만든다.
   for (int i = 0; i < medianNum; i++) {
     maidanArr[i] = selection(arr, leftIndex + (5 * i), (leftIndex + (5 * (i+1)-1)), leftIndex + (5 * i) + 2);
   }
 
+  // 중간값들의 중간값을 계산하기 위해 선택 함수를 순환호출한다. 
   int pivot = selection(maidanArr, 0, medianNum - 1, (medianNum / 2) + 1);
+  
+  // pivot을 사용하여 배열 arr을 분할한다.
   int pivotIndex = partition(arr, leftIndex, rightIndex, pivot);
   int rank = pivotIndex - leftIndex + 1;
 
