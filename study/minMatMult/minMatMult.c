@@ -28,6 +28,7 @@ int minMatMult (int length, int d[]) {
     matrix[i][i] = 0;
   }
 
+
   for (int f = 1; f <= length - 1; f++) {
     for (int n = 1; n <= length - f; n++) {
       int j = f + n;
